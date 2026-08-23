@@ -1,0 +1,36 @@
+# ============================================================================
+# seer — Google Dork List: Atlassian Jira
+# ============================================================================
+# Category : Project management / ticketing (SaaS + self-hosted)
+# Target   : *.atlassian.net, self-hosted Jira
+# Ranking  : HIGH = open registration / admin-adjacent surfaces
+#            MEDIUM = public boards/portals, contact/flow pages
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (technology/google-dorks-for-jira.txt) https://github.com/Proviesec/google-dorks
+#   [5] BullsEye0/google_dork_list                                    https://github.com/BullsEye0/google_dork_list
+#   [13] str1k3r0p/GoogleDorks                                         https://github.com/str1k3r0p/GoogleDorks
+#   [11] h0tak88r/Sec-88                                               https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — open registration / public access surfaces
+# Open user signup on self-hosted Jira (account creation -> internal intel)
+inurl:/secure/Signup!default.jspa [11]
+# Open Service Desk signup
+inurl:/servicedesk/customer/user/login [11]
+site:*/JIRA/login [5]
+# Contact-admins page leaks tenant config when exposed
+inurl:/secure/ContactAdministrators!default.jspa intext:"Request Details" -intext:"Your Jira administrator has not yet configured this contact form" [1]
+
+### MEDIUM ROI — admin/board surfaces & directory listings
+"Parent Directory" "Last modified" jira [1]
+site:{target} inurl:jira [13]
+# User email visibility (PII): check anonymous profile view per [11]
+
+### LOW ROI — footprinting
+inurl:jira [1]
+
+# --- Direct-path probes (verified paths from [11]) ---
+# /secure/Signup!default.jspa             (open signup?)
+# /servicedesk/customer/user/login        (open service desk signup?)

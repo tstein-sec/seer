@@ -1,0 +1,41 @@
+# ============================================================================
+# seer — Google Dork List: Grafana (observability / dashboards)
+# ============================================================================
+# Category : Observability / monitoring
+# Target   : self-hosted Grafana (incl. unauthenticated dashboards)
+# Ranking  : HIGH = unauthenticated dashboards / home screens
+#            MEDIUM = login panels + public dashboards
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (google-dorks-for-grafana.txt, -stats.txt, -monitoring.txt) https://github.com/Proviesec/google-dorks
+#   [13] str1k3r0p/GoogleDorks  https://github.com/str1k3r0p/GoogleDorks
+#   [11] h0tak88r/Sec-88        https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — exposed home screens / dashboards
+# "Welcome to Grafana" = fresh/unconfigured install (often no auth). orgid confirms instance.
+"Welcome to Grafana" intitle:Grafana [1]
+"Welcome to Grafana" inurl:/orgid [1]
+intitle:"Welcome to Grafana" [1]
+intitle:"Grafana - Home" inurl:/orgid [1]
+intitle:Grafana inurl:orgid [1]
+inurl:login "Welcome to Grafana" [1]
+inurl:grafana inurl:/dashboard/ [1]
+
+### MEDIUM ROI — login panels & public dashboards
+intitle:"Grafana" inurl:"/login" [1]
+intitle:"grafana" inurl:"/grafana/login" "Forgot your password" [1]
+intext:Grafana New version available! -grafana.com -grafana.org inurl:/login [1]
+intitle:"Grafana" "Forgot your password" [1]
+inurl:/public-dashboards [11]
+inurl:/grafana/public-dashboards [11]
+
+### LOW ROI — footprinting
+inurl:grafana [1]
+site:{target} inurl:grafana [13]
+
+# --- Direct-path probes (verified paths from [11]) ---
+# /grafana, /grafana/login
+# /grafana/public-dashboards, /public-dashboards
+# /api/health, /api/search

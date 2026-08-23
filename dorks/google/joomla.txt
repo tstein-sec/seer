@@ -1,0 +1,52 @@
+# ============================================================================
+# seer — Google Dork List: Joomla
+# ============================================================================
+# Category : CMS
+# Target   : self-hosted Joomla (admin, installer, components)
+# Ranking  : HIGH = installer/admin exposure, DB path, extension vulns
+#            MEDIUM = component surfaces & feed exposure
+#            LOW = version fingerprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (cms/google-dorks-for-joomla.txt) https://github.com/Proviesec/google-dorks
+#   [3] opsdisk/pagodo (GHDB scrape)                             https://github.com/opsdisk/pagodo
+#   [6] TakSec/google-dorks-bug-bounty                            https://github.com/TakSec/google-dorks-bug-bounty
+# ============================================================================
+
+### HIGH ROI — installer / admin / DB surfaces
+intitle:"Joomla - Web Installer" [1]
+intitle:"Joomla – Web Installer" [1]
+"Joomla! Administration Login" inurl:"/index.php" [1]
+site:*/joomla/administrator [1]
+site:*/joomla/login [6]
+inurl: /libraries/joomla/database/ [3]
+intitle:"Index of /" "joomla_update.php" [1]
+allintitle:"Forum Post Assistant :" ext:php -site:joomla.org [1]
+intext:"~~Joomla1.txt" title:"Index of /" [1]
+inurl:~~joomla3.txt filetype:txt [1]
+
+### MEDIUM ROI — debug consoles & component endpoints
+"Consola de Joomla! Debug" inurl:index.php [1]
+inurl:"com_ijoomla_archive" [1]
+inurl:"com_joomlaradiov5" [1]
+inurl:com_joomladate [1]
+inurl:index.php?option=com_joomlaconnect_be [1]
+inurl:index.php?option=com_bookjoomlas [1]
+inurl:"index.php?option=com_news_portal" or "Powered by iJoomla News Portal" [1]
+inurl:index.php?format=feed&type=rss [1]
+inurl:index.php?format=feed&type=atom [1]
+
+### LOW ROI — version fingerprinting
+intext:"joomla! 1.6 - Open Source Content Management" [1]
+intext:"joomla! 1.7 - Open Source Content Management" [1]
+"powered by joomla 3.2" OR "powered by joomla 3.3" OR "powered by joomla 3.4" [1]
+intext:Joomla 1.6 inurl:index.php/login [1]
+intext:Joomla 1.7 inurl:index.php/login [1]
+intitle:"index of" joomla [1]
+inurl:using-joomla/extensions/templates/beez5/home-page-beez5 [1]
+inurl:index.php/using-joomla/extensions/modules/ intext:joomla! 1.7 [1]
+
+# --- Direct-path probes (verified from [1],[3]) ---
+# /administrator/               (Joomla admin)
+# /libraries/joomla/database/   (DB layer listing)
+# /installation/                (installer - cleanup check)

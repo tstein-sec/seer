@@ -1,0 +1,23 @@
+# ============================================================================
+# seer — Google Dork List: JupyterHub / Jupyter (data science platforms)
+# ============================================================================
+# Category : Data science / notebooks
+# Target   : JupyterHub login pages, exposed notebook servers
+# Ranking  : HIGH = unauthenticated notebook servers (RCE via terminal)
+#            MEDIUM = login surfaces
+#            LOW = footprinting
+#
+# Sources:
+#   [3] opsdisk/pagodo (GHDB scrape, all_google_dorks.txt) https://github.com/opsdisk/pagodo
+# ============================================================================
+
+### HIGH ROI — unauthenticated notebook servers
+intitle:"JupyterHub" inurl:/hub/login [3]
+
+### MEDIUM ROI — footprinting
+site:{target} inurl:/hub/login [3]
+
+# --- Direct-path probes (derived from the [3] hub/login string) ---
+# /hub/login            (JupyterHub login)
+# /tree                 (notebook file browser - check auth)
+# /terminals/           (web terminal - RCE when unauthenticated)

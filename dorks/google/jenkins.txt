@@ -1,0 +1,46 @@
+# ============================================================================
+# seer — Google Dork List: Jenkins (CI/CD)
+# ============================================================================
+# Category : DevOps / CI-CD
+# Target   : self-hosted Jenkins (incl. unauthenticated instances)
+# Ranking  : HIGH = credentials, script console, backup/secret material
+#            MEDIUM = login/panel surfaces, signup, config exposure
+#            LOW = footprinting / version detection
+#
+# Sources:
+#   [1] Proviesec/google-dorks (all-google-dorks.txt) https://github.com/Proviesec/google-dorks
+#   [2] readloud/Google-Hacking-Database             https://github.com/readloud/Google-Hacking-Database
+#   [12] xcode96/Google-Dorks                        https://github.com/xcode96/Google-Dorks
+#   [11] h0tak88r/Sec-88 (service checklists)        https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — credentials & secrets
+# config.xml contains passwordHash for users + credentials store references
+filetype:xml config.xml passwordHash Jenkins [1]
+inurl:jenkins-backup [1]
+filetype:log "Jenkins" [1]
+# Groovy script console = unauthenticated RCE when exposed (search scope, see direct-path probes)
+intitle:"Jenkins" inurl:/script [11]
+intitle:"Jenkins" inurl:/scriptText [11]
+
+### MEDIUM ROI — unauthenticated dashboards, login, open signup
+# "Dashboard [Jenkins]" with Credentials tab = likely anonymous dashboard access
+intitle:"Dashboard [Jenkins]" Credentials [1]
+inurl:8080 intitle:"Dashboard [Jenkins]" [1]
+intitle:"Sign in [Jenkins]" inurl:"login?from" [2]
+intitle:"Jenkins" "Sign in" [1]
+intitle:"Jenkins" inurl:"/login" [1]
+inurl:"/jenkins/login" "Page generated" [1]
+site:{target} intitle:"Jenkins" inurl:jenkins [12]
+inurl:/signup [11]
+inurl:/jenkins/signup [11]
+# Sensitive directory footprint
+intitle:"Dashboard [Jenkins]" [2]
+
+### LOW ROI — footprinting
+intitle:"Dashboard [Jenkins]" [2]
+
+# --- Direct-path probes (verified paths from [11]) ---
+# /signup, /jenkins/signup            (open signup)
+# /script, /scriptText                (Groovy script console - RCE if open)
+# /jenkins/script, /jenkins/scriptText

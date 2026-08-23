@@ -1,0 +1,29 @@
+# ============================================================================
+# seer — Google Dork List: HubSpot / Trello / Bitbucket (SaaS collaboration)
+# ============================================================================
+# Category : SaaS / collaboration & development platforms
+# Target   : leaked HubSpot PATs, public Trello boards, public Bitbucket repos
+# Ranking  : HIGH = tokens / private repo exposure
+#            MEDIUM = public resources with sensitive material
+#            LOW = footprinting
+#
+# Sources:
+#   [10] DiddyMeech/Titan-Reborn (brain/niches/saas/dork_pack.md) https://github.com/DiddyMeech/Titan-Reborn
+#   [11] h0tak88r/Sec-88 (service checklists)                     https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HUBSPOT — HIGH ROI — leaked private app tokens (pat-na1- = live PAT prefix)
+site:{target} "pat-na1-" filetype:js [10]
+site:{target} "HubSpot" inurl:/api/crm/v3 [10]
+
+### TRELLO — MEDIUM ROI — public boards (often contain internal docs/creds)
+site:trello.com "{target}" [11]
+
+### BITBUCKET — MEDIUM ROI — publicly accessible private repos
+site:bitbucket.org "{target}" [11]
+site:bitbucket.org inurl:/workspace/projects "{target}" [11]
+
+# --- Direct-path probes (verified from [10],[11]) ---
+# https://trello.com/b/{boardId}              (public board access)
+# https://bitbucket.org/{workspace}/projects  (workspace project index)
+# https://www.postman.com/{org}/?tab=workspaces (Postman public workspaces - [11])
