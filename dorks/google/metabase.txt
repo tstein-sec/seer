@@ -1,0 +1,22 @@
+# ============================================================================
+# seer — Google Dork List: Metabase (BI / analytics)
+# ============================================================================
+# Category : Observability / BI
+# Target   : self-hosted Metabase (public dashboards leak business data)
+# Ranking  : HIGH = public/embedded dashboards
+#            MEDIUM = login
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (all-google-dorks.txt) https://github.com/Proviesec/google-dorks
+# ============================================================================
+
+### HIGH ROI — public dashboards (data exposure)
+intitle:Metabase inurl:/dash [1]
+
+### LOW ROI — footprinting
+site:{target} inurl:metabase [1]
+
+# --- Direct-path probes (derived from the [1] intitle:Metabase string) ---
+# /public/dashboard/      (public dashboards when enabled)
+# /auth/login             (login page)

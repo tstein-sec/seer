@@ -1,0 +1,43 @@
+# ============================================================================
+# seer — Google Dork List: Kibana & Elasticsearch (observability / data)
+# ============================================================================
+# Category : Observability / data stores
+# Target   : self-hosted Kibana dashboards, open Elasticsearch clusters
+# Ranking  : HIGH = unauthenticated dashboards / cluster data exposure
+#            MEDIUM = login panels / console surfaces
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (google-dorks-for-kibana.txt, -monitoring.txt) https://github.com/Proviesec/google-dorks
+#   [2] readloud/Google-Hacking-Database                                      https://github.com/readloud/Google-Hacking-Database
+#   [13] str1k3r0p/GoogleDorks                                                 https://github.com/str1k3r0p/GoogleDorks
+#   [11] h0tak88r/Sec-88                                                       https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — unauthenticated Kibana dashboards (full log data exposure)
+inurl:"/app/kibana#" [1]
+inurl::/app/kibana "Kibana" -discuss -ipaddress -git [2]
+inurl:app/kibana intext:Loading Kibana [1]
+inurl:kibana inurl:/dashboard/ [1]
+
+### MEDIUM ROI — login panels, console/timelion surfaces
+intitle:"Kibana" inurl:"/login" [1]
+inurl:/app/timelion [11]
+inurl:/app/console [11]
+
+### HIGH ROI — open Elasticsearch clusters (all data, no auth)
+inurl:/_cat/indices [11]
+inurl:/_cat/nodes [11]
+inurl:/_cluster/health [11]
+inurl:/_search [11]
+
+### LOW ROI — footprinting
+inurl:kibana [1]
+inurl::5601/app/kibana [1]
+site:{target} inurl:kibana [13]
+site:{target} inurl:elasticsearch [13]
+
+# --- Direct-path probes (verified paths from [11]) ---
+# Kibana: /app/kibana, /app/timelion, /app/console, /api/console
+# Elasticsearch: /_cat, /_cat/indices, /_cat/nodes, /_cluster/health,
+#                /_nodes/stats, /*/_search

@@ -1,0 +1,23 @@
+# ============================================================================
+# seer — Google Dork List: Keycloak (identity / SSO)
+# ============================================================================
+# Category : Identity / IAM
+# Target   : self-hosted Keycloak (realm admin, /auth)
+# Ranking  : HIGH = account-management surfaces (self-registration → realm intel)
+#            MEDIUM = login/admin consoles
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (all-google-dorks.txt) https://github.com/Proviesec/google-dorks
+# ============================================================================
+
+### HIGH ROI — account management (self-registration / user dirs)
+intitle:"Keycloak" "Account Management" [1]
+
+### MEDIUM ROI — auth consoles
+intitle:"Keycloak" inurl:"/auth" [1]
+
+# --- Direct-path probes (derived from the [1] strings) ---
+# /auth                  (Keycloak root)
+# /auth/admin            (admin console)
+# /auth/realms/{realm}/account  (account management)

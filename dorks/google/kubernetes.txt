@@ -1,0 +1,27 @@
+# ============================================================================
+# seer — Google Dork List: Kubernetes
+# ============================================================================
+# Category : DevOps / orchestration
+# Target   : Kubernetes Dashboard, kube-system endpoints, API probes
+# Ranking  : HIGH = unauth control-plane endpoints / dashboard
+#            MEDIUM = health/metrics surfaces exposing internals
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (google-dorks-for-kubernetes.txt) https://github.com/Proviesec/google-dorks
+#   [12] xcode96/Google-Dorks                                     https://github.com/xcode96/Google-Dorks
+#   [13] str1k3r0p/GoogleDorks                                     https://github.com/str1k3r0p/GoogleDorks
+# ============================================================================
+
+### HIGH ROI — Kubernetes Dashboard (full cluster control when anonymous)
+site:{target} intitle:"Kubernetes Dashboard" [12]
+site:{target} inurl:kubernetes [13]
+
+### MEDIUM ROI — control-plane health surfaces
+inurl:/metrics [1]
+inurl:/healthz [1]
+inurl:/readyz [1]
+
+# --- Direct-path probes (verified strings from [1],[12]) ---
+# inurl:/metrics, /healthz, /readyz  (kubelet / control-plane health endpoints)
+# intitle:"Kubernetes Dashboard"     (anonymous dashboard check)

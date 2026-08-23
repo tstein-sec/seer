@@ -1,0 +1,39 @@
+# ============================================================================
+# seer — Google Dork List: Laravel (PHP framework)
+# ============================================================================
+# Category : Web framework
+# Target   : self-hosted Laravel (env files, debug logs, Telescope/Horizon)
+# Ranking  : HIGH = .env / debug logs with secrets
+#            MEDIUM = dev tooling (Telescope, Horizon, debugbar)
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (all-google-dorks.txt) https://github.com/Proviesec/google-dorks
+#   [2] readloud/Google-Hacking-Database              https://github.com/readloud/Google-Hacking-Database
+#   [11] h0tak88r/Sec-88                              https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — env files & logs with credentials
+intext:"laravel" ext:env intext:"db_password" -git [2]
+intext:database inurl:"laravel.log" ext:log [1]
+inurl:("/storage/logs/laravel.log") AND intext:("local.ERROR" | "NULL.ERROR" | "EMERGENCY:") [1]
+/var/www/manage/storage/logs/laravel- ext:log [1]
+intitle:"index of" "laravel.log" | "main.yaml" | "server.cfg" [1]
+
+### MEDIUM ROI — dev tooling exposure (full request/DB visibility)
+inurl:/telescope [11]
+inurl:/telescope/requests [11]
+inurl:/telescope/exceptions [11]
+inurl:/horizon [11]
+inurl:/_debugbar [11]
+
+### LOW ROI — footprinting / version detection
+inurl:readme.md intext:"Laravel" [1]
+inurl:composer.json laravel -site:github.com [1]
+
+# --- Direct-path probes (verified from [11]) ---
+# /.env, /.env.local, /.env.production
+# /_debugbar, /_debugbar/open, /_debugbar/clockwork/{id}
+# /telescope, /telescope/requests, /telescope/exceptions
+# /ignition/execute-solution, /ignition/update-options
+# /horizon, /pulse

@@ -1,0 +1,43 @@
+# ============================================================================
+# seer — Google Dork List: Magento (e-commerce)
+# ============================================================================
+# Category : CMS / e-commerce
+# Target   : self-hosted Magento 1/2 (admin, customer, checkout surfaces)
+# Ranking  : HIGH = admin/customer surfaces
+#            MEDIUM = catalog/checkout & dev listing
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (cms/google-dorks-magento.txt) https://github.com/Proviesec/google-dorks
+# ============================================================================
+
+### HIGH ROI — admin & customer-account surfaces
+inurl:"/adminhtml/default/default/" [1]
+inurl:"/index.php/adminhtml/default/default" [1]
+"Log in" "Magento is a trademark of Magento Inc." [1]
+inurl:/customer/account/ [1]
+inurl:/customer/account/login/referer/ [1]
+inurl:/account/create/ [1]
+inurl:/account/forgotpassword [1]
+inurl:/account/login/ [1]
+
+### MEDIUM ROI — checkout/catalog & dev surfaces
+inurl:/sales/guest/form/ [1]
+inurl:/catalogsearch/result?q= [1]
+inurl:/catalogsearch/advanced [1]
+inurl:/catalog/seo_sitemap/category/ [1]
+inurl:/catalogsearch/result/ [1]
+inurl:/index.php/catalog/seo_sitemap/category/ [1]
+inurl:/default/sales/ [1]
+intitle:"index of" AND inurl:magento AND inurl:/dev [1]
+inurl:/skin/frontend/ [1]
+intitle:"index of" inurl:magento [1]
+
+### LOW ROI — footprinting
+inurl:magento [1]
+inurl:/index.php/customer/account/ [1]
+inurl:/index.php/sales/guest/form/ [1]
+
+# --- Direct-path probes (verified from [1]) ---
+# /adminhtml/default/default (Magento 1 admin)
+# /customer/account/ (login/create), /sales/guest/form/ (guest order lookup)
