@@ -1,0 +1,54 @@
+# ============================================================================
+# seer — Google Dork List: Environment files (.env) — cross-application
+# ============================================================================
+# Category : Cross-application secrets
+# Target   : leaked .env / config files with provider credentials.
+#            Use alongside app-specific lists (aws, azure, gcp, slack, ...)
+# Ranking  : HIGH = live credentials
+#            MEDIUM = token material
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (google-dorks-for-env-files.txt, -ci-cd.txt, -cloud-platforms.txt, -stripe.txt, -sendgrid.txt, -mailgun.txt, -twilio.txt, -discord.txt) https://github.com/Proviesec/google-dorks
+# ============================================================================
+
+### HIGH ROI — cloud & database credentials
+filetype:env "AWS_SECRET_ACCESS_KEY" [1]
+filetype:env "AWS_ACCESS_KEY_ID" [1]
+filetype:env "DB_PASSWORD" [1]
+filetype:env "DATABASE_URL" [1]
+filetype:env "REDIS_URL" [1]
+filetype:env "JWT_SECRET" [1]
+filetype:env "AZURE_CLIENT_SECRET" [1]
+filetype:env "AZURE_CLIENT_ID" [1]
+filetype:env "AZURE_KEY" [1]
+filetype:env "GOOGLE_APPLICATION_CREDENTIALS" [1]
+
+### MEDIUM ROI — API/SaaS tokens
+filetype:env "OPENAI_API_KEY" [1]
+filetype:env "OPENAI_KEY" [1]
+filetype:env "HUGGINGFACE_API_KEY" [1]
+filetype:env "HUGGINGFACEHUB_API_TOKEN" [1]
+filetype:env "REPLICATE_API_TOKEN" [1]
+filetype:env "STRIPE_SECRET_KEY" [1]
+filetype:env "STRIPE_API_KEY" [1]
+filetype:env "SENDGRID_API_KEY" [1]
+filetype:env "MAILGUN_API_KEY" [1]
+filetype:env "TWILIO_AUTH_TOKEN" [1]
+filetype:env "TWILIO_ACCOUNT_SID" [1]
+filetype:env "DISCORD_TOKEN" [1]
+filetype:env "DIGITALOCEAN_TOKEN" [1]
+filetype:env "HEROKU_API_KEY" [1]
+filetype:env "CIRCLE_TOKEN" [1]
+filetype:env "TRAVIS_TOKEN" [1]
+
+### MEDIUM ROI — token-prefix material (any file type)
+"sk_live" [1]
+"sk_test" [1]
+"SG." "api_key" [1]
+"key-" "mailgun" [1]
+"xoxb-" [1]
+"xoxp-" [1]
+
+# --- Direct-path probes (verified from [1]) ---
+# /.env, /.env.local, /.env.production, /.env.example-ish backups (.env.bak/.env~)

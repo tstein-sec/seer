@@ -1,0 +1,46 @@
+# ============================================================================
+# seer — Google Dork List: GitLab (CI/CD / source hosting)
+# ============================================================================
+# Category : DevOps / CI-CD, self-hosted + gitlab.com orgs
+# Ranking  : HIGH = secrets/logs, backup archives, snippet exposure
+#            MEDIUM = sign-in panels, runner surfaces, user-content search
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (all-google-dorks.txt)             https://github.com/Proviesec/google-dorks
+#   [2] readloud/Google-Hacking-Database                          https://github.com/readloud/Google-Hacking-Database
+#   [3] opsdisk/pagodo (GHDB scrape)                              https://github.com/opsdisk/pagodo
+#   [12] xcode96/Google-Dorks                                     https://github.com/xcode96/Google-Dorks
+#   [11] h0tak88r/Sec-88 (service checklists)                     https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — secrets, logs, backups
+# AWS keys pasted into public GitLab repos/issues (classic leak)
+inurl:gitlab "AWS_SECRET_KEY" [3]
+# Runner logs can leak tokens/endpoints
+filetype:log "GitLab Runner" [1]
+# sshd auth log exposure on GitLab hosts
+GitLab ssh.log ext:log [2]
+# Instance backup archives left in web root
+inurl:gitlab-backup [1]
+# Credential-ish strings in GitLab-hosted files
+filetype:txt site:gitlab.* "secret" OR "authtoken" [2]
+site:gitlab.* intext:password intext:@gmail.com | @yahoo.com | @hotmail.com [2]
+
+### MEDIUM ROI — login/admin surfaces, exposed snippets
+intitle:"GitLab" inurl:"/users/sign_in" [1]
+intitle:"Sign in · GitLab" [1]
+site:{target} intitle:"GitLab" inurl:users/sign_in [12]
+# Private snippets exposed on public instances
+inurl:/explore/snippets [11]
+# Common exploit-era footprint
+intitle:"GitLab" inurl:/users/sign_in [12]
+
+### LOW ROI — footprinting
+intitle:"Sign in · GitLab" [1]
+
+# --- Direct-path probes (verified paths from [11]) ---
+# /explore/snippets            (public snippets, incl. mis-set "private" ones)
+# /explore/projects            (public project index)
+# /users/sign_in               (login; also check /users/sign_up for open signup)
+# /admin                      (admin panel - rarely exposed but check)

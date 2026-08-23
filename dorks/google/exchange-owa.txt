@@ -1,0 +1,38 @@
+# ============================================================================
+# seer — Google Dork List: Microsoft Exchange / Outlook Web Access (OWA)
+# ============================================================================
+# Category : E-mail / groupware
+# Target   : OWA (/owa), ECP (/ecp), EWS (/EWS), legacy /exchange
+# Ranking  : HIGH = auth-adjacent surfaces & anonymous EWS
+#            MEDIUM = logon pages (user-target for spray)
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (all-google-dorks.txt) https://github.com/Proviesec/google-dorks
+#   [2] readloud/Google-Hacking-Database              https://github.com/readloud/Google-Hacking-Database
+# ============================================================================
+
+### HIGH ROI — EWS / autodiscover & exposed services
+# Exchange Web Services: anonymous/credential-less probing when misconfigured
+site:*/EWS/Exchange.asmx [2]
+inurl:/ews/exchange.asmx [2]
+site:exchange.*.*/owa/ [1]
+site:*/exchange-login/ intitle:"Login" [1]
+
+### MEDIUM ROI — OWA logon surfaces (mail user enumeration + spray targets)
+allinurl:"owa/auth/logon.aspx" -google -github [1]
+intitle:"Outlook Web App" inurl:"/owa/auth" logon ext:aspx [1]
+intitle:"Microsoft+Outlook+Web+Access+Log+On" | inurl:/owa/auth/logon.aspx [1]
+inurl:exchweb/bin/auth/owalogon.asp [1]
+intitle:"Exchange Log In" [2]
+allinurl:"exchange/logon.asp" [1]
+inurl:"https://owa" [1]
+
+### LOW ROI — footprinting / version detection
+intitle:"Microsoft Outlook Web Access - Logon" [1]
+inurl:/owa/ [1]
+
+# --- Direct-path probes (verified from [1],[2]) ---
+# /owa/auth/logon.aspx              (OWA login)
+# /exchange/logon.asp               (legacy OWA)
+# /EWS/Exchange.asmx                (EWS - anonymous access check)

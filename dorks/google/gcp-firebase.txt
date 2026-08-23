@@ -1,0 +1,38 @@
+# ============================================================================
+# seer — Google Dork List: Google Cloud Platform (GCP) & Firebase
+# ============================================================================
+# Category : Cloud
+# Target   : storage.googleapis.com, firebaseio.com, leaked service accounts
+# Ranking  : HIGH = live credential material (service-account JSON = full GCP)
+#            MEDIUM = public buckets / firebase configs
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (google-dorks-for-gcp.txt, -firebase.txt) https://github.com/Proviesec/google-dorks
+#   [13] str1k3r0p/GoogleDorks                                             https://github.com/str1k3r0p/GoogleDorks
+# ============================================================================
+
+### HIGH ROI — live credential material
+# Service-account private_key JSON = full GCP project compromise
+filetype:json "google" "private_key" [1]
+filetype:json "gcp" "credentials" [1]
+filetype:env "GOOGLE_APPLICATION_CREDENTIALS" [1]
+filetype:json "firebase" "private_key" [1]
+filetype:json "firebase" "serviceAccount" [1]
+"firebase" "private_key" [1]
+
+### MEDIUM ROI — public buckets & firebase configs
+inurl:storage.googleapis.com [1]
+site:storage.googleapis.com "{target}" [13]
+site:storage.cloud.google.com "{target}" [13]
+site:firebasestorage.googleapis.com "{target}" [13]
+site:firebaseio.com "{target}" [13]
+filetype:json "firebase" "apiKey" [1]
+inurl:firebase "apiKey" [1]
+
+### LOW ROI — footprinting
+site:googleapis.com "{target}" [13]
+
+# --- Direct-path probes (verified from [1],[13]) ---
+# https://storage.googleapis.com/{bucket}/    (anonymous listing test)
+# https://{bucket}.storage.googleapis.com/    (CNAME-style access)

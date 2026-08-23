@@ -1,0 +1,37 @@
+# ============================================================================
+# seer — Google Dork List: Drupal
+# ============================================================================
+# Category : CMS
+# Target   : self-hosted Drupal (register, user pages, CHANGELOG)
+# Ranking  : HIGH = user registration / enumeration surfaces
+#            MEDIUM = login & config exposure
+#            LOW = version fingerprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (cms/google-dorks-for-drupal.txt) https://github.com/Proviesec/google-dorks
+#   [2] readloud/Google-Hacking-Database                         https://github.com/readloud/Google-Hacking-Database
+#   [3] opsdisk/pagodo (GHDB scrape)                             https://github.com/opsdisk/pagodo
+#   [11] h0tak88r/Sec-88                                          https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — open registration & user enumeration
+inurl:"/user/register" "Powered by Drupal" [1]
+inurl:"/user/register" "Powered by Drupal" -CAPTCHA -"Access denied" [1]
+inurl:user intitle:"Drupal" intext:"Log in" -"powered by" [3]
+intext:"Login | Password" AND intext:"Powered by | username" AND intext:Drupal AND inurl:user [1]
+site:*/Drupal/login [2]
+
+### MEDIUM ROI — config & module surface exposure
+intitle:"index of" drupal [1]
+intitle:"index of " Drupal Author: Coudry hugo [1]
+inurl:"sites/all/modules/ckeditor" -drupalcode.org [2]
+inurl:CHANGELOG.txt intext:drupal intext:"SA-CORE" -intext:7.32 -site:github.com -site:drupal.org [1]
+
+### LOW ROI — version fingerprinting
+"Powered by Drupal" [1]
+/node/{id} [11]
+
+# --- Direct-path probes (verified from [1],[2],[11]) ---
+# /user/register, /user/login, /user/{id}
+# /CHANGELOG.txt                 (version + SA-CORE advisory fingerprint)
+# /node/{id}                     (content node IDOR-style enumeration)

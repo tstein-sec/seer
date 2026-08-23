@@ -1,0 +1,44 @@
+# ============================================================================
+# seer — Google Dork List: Docker / containers
+# ============================================================================
+# Category : DevOps / containers
+# Target   : leaked docker-compose files, registry APIs, docker hosts
+# Ranking  : HIGH = compose files with secrets
+#            MEDIUM = registry/API surfaces & backups
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (all-google-dorks.txt) https://github.com/Proviesec/google-dorks
+#   [2] readloud/Google-Hacking-Database              https://github.com/readloud/Google-Hacking-Database
+#   [3] opsdisk/pagodo (GHDB scrape)                  https://github.com/opsdisk/pagodo
+#   [13] str1k3r0p/GoogleDorks                         https://github.com/str1k3r0p/GoogleDorks
+#   [11] h0tak88r/Sec-88                               https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — compose/config files carrying secrets
+# docker-compose.yml + .env in the same listing = secrets harvest
+intitle:"index of /" "docker-compose.yml" ".env" [3]
+"MySQL_ROOT_PASSWORD:" "docker-compose" ext:yml [1]
+inurl:docker-compose.yml [1]
+intitle:"index of" docker-compose.yml [1]
+intitle:"index of" "docker-compose.yaml" [2]
+intitle:"index of" "docker-cloud.yml" [2]
+intitle:"index of" "docker.yml" [1]
+inurl:*gov intitle:"index of" "docker-compose" [2]
+
+### MEDIUM ROI — registry & API surfaces (v2 API = anonymous pull/push when open)
+inurl:/v2/_catalog [11]
+inurl:/_ping [11]
+inurl:docker-backup [1]
+filetype:log "docker" [1]
+site:.com "index of docker" [2]
+intitle:"index of" ".dockerignore" [1]
+
+### LOW ROI — footprinting
+site:{target} inurl:docker [13]
+intitle:"docker" intitle:"index of" config [1]
+
+# --- Direct-path probes (verified from [11]) ---
+# /v2/_catalog              (registry repo list)
+# /_ping                    (Docker Engine API health)
+# /v1.41/info, /v1.41/containers/json  (Engine API info/containers)
