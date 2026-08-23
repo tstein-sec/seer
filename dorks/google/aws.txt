@@ -1,0 +1,45 @@
+# ============================================================================
+# seer — Google Dork List: Amazon Web Services (S3 & credentials)
+# ============================================================================
+# Category : Cloud
+# Target   : *.s3.amazonaws.com, *.amazonaws.com, leaked AWS keys
+# Ranking  : HIGH = live credentials
+#            MEDIUM = public buckets / bucket listings
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (google-dorks-for-finding-aws-s3.txt, finding-username-passwords/aws-passwords.txt, env files) https://github.com/Proviesec/google-dorks
+#   [13] str1k3r0p/GoogleDorks https://github.com/str1k3r0p/GoogleDorks
+# ============================================================================
+
+### HIGH ROI — live credential material
+filetype:env "AWS_SECRET_ACCESS_KEY" [1]
+filetype:env "AWS_ACCESS_KEY_ID" [1]
+"AWS_SECRET_ACCESS_KEY" [1]
+"AWS_ACCESS_KEY_ID" [1]
+"AWS_SECURITY_TOKEN" [1]
+"AWS_S3_SECRET_ACCESS_KEY" [1]
+"AWS_SES_SECRET_ACCESS_KEY" [1]
+"AWS_SES_ACCESS_KEY_ID" [1]
+"aws session_token access_key" [1]
+aws SECRET_KEY [1]
+s3-secret-access-key [1]
+
+### MEDIUM ROI — public buckets & listings
+site:s3.amazonaws.com intitle:index.of.bucket [1]
+site:s3.amazonaws.com "{target}" [13]
+site:{target}.s3.amazonaws.com [13]
+site:*.amazonaws.com inurl:index.html [1]
+intitle:index.of.bucket [1]
+site:http://s3.amazonaws.com intitle:Bucket loading [1]
+"Bucket Date Modified" [1]
+s3 site:amazonaws.com filetype:sql [1]
+
+### LOW ROI — footprinting / misc
+site:http://amazonaws.com inurl:".s3.amazonaws.com/" [1]
+
+# --- Direct-path probes (verified from [1]) ---
+# https://{bucket}.s3.amazonaws.com/            (list-objects when public)
+# https://s3.amazonaws.com/{bucket}/            (path-style listing)
+# ARTIFACTS_AWS_ACCESS_KEY_ID= / ARTIFACTS_AWS_SECRET_ACCESS_KEY= [1]
+# AWSSECRETKEY= [1]

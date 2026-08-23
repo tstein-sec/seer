@@ -1,0 +1,32 @@
+# ============================================================================
+# seer — Google Dork List: Microsoft Azure
+# ============================================================================
+# Category : Cloud
+# Target   : blob.core.windows.net, dev.azure.com, leaked AAD secrets
+# Ranking  : HIGH = live credential material
+#            MEDIUM = public blob containers
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (google-dorks-for-azure.txt) https://github.com/Proviesec/google-dorks
+#   [13] str1k3r0p/GoogleDorks                                https://github.com/str1k3r0p/GoogleDorks
+# ============================================================================
+
+### HIGH ROI — live credential material
+filetype:env "AZURE_CLIENT_SECRET" [1]
+filetype:env "AZURE_CLIENT_ID" [1]
+filetype:env "AZURE_KEY" [1]
+filetype:json "azure" "clientSecret" [1]
+
+### MEDIUM ROI — public blob storage
+inurl:blob.core.windows.net [1]
+site:blob.core.windows.net intitle:"Index of" [1]
+site:blob.core.windows.net "{target}" [13]
+
+### LOW ROI — footprinting / dev repos
+site:dev.azure.com "{target}" [13]
+site:azurewebsites.net "{target}" [13]
+
+# --- Direct-path probes (verified from [1]) ---
+# https://{account}.blob.core.windows.net/{container}?restype=container&comp=list
+# (anonymous container listing when misconfigured)

@@ -1,0 +1,42 @@
+# ============================================================================
+# seer — Google Dork List: Apache HTTP Server
+# ============================================================================
+# Category : Web server
+# Target   : mod_status/mod_info, default pages, .htpasswd/.htaccess
+# Ranking  : HIGH = status pages (request/URL disclosure) & auth files
+#            MEDIUM = default pages (unmanaged hosts)
+#            LOW = version/error fingerprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (web-server/google-dorks-for-apache.txt, google-dorks-for-webserver.txt) https://github.com/Proviesec/google-dorks
+#   [11] h0tak88r/Sec-88  https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — mod_status / server-info exposure
+intitle:"Apache Status" "Apache Server Status for" [1]
+site:*/server-status intext:"Apache server status for" [1]
+inurl:"server-status" "Server Version: Apache/" "Server Built: " "Server uptime:" "Total accesses" "CPU Usage:" [1]
+inurl:/server-status + "Server MPM:" [1]
+inurl:/server-info [11]
+# Auth files
+inurl:.htpasswd [11]
+inurl:.htaccess [11]
+
+### MEDIUM ROI — default/unmanaged hosts
+intitle:"Apache2 Debian Default Page: It works" [1]
+intitle:"Apache2 Ubuntu Default Page: It works" [1]
+intitle:"Test Page for Apache" "It Worked!" [1]
+intitle:"Test Page for Apache" "It Worked!" "on this web" [1]
+intitle:"Test Page for Apache" [1]
+intitle:HTTP Server Test Page powered by CentOS [1]
+
+### LOW ROI — version / error fingerprinting
+intitle:"Apache HTTP Server" intitle:"documentation" [1]
+intitle:"Object not found!" intext:"Apache/2.0.* (Linux/SuSE)" [1]
+intext:Apache/2.2.29 (Unix) mod_ssl/2.2.29 | intitle:"Index of /" [1]
+intitle:"Index of" "Apache/2.4.7 (Ubuntu) Server" [1]
+intitle:"index of" "server at" [1]
+
+# --- Direct-path probes (verified from [11]) ---
+# /server-status, /server-info, /mod_status
+# /.htaccess, /.htpasswd

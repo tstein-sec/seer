@@ -1,0 +1,35 @@
+# ============================================================================
+# seer — Google Dork List: Atlassian Confluence
+# ============================================================================
+# Category : Knowledge base / collaboration (SaaS + self-hosted)
+# Target   : *.atlassian.net/wiki, self-hosted Confluence
+# Ranking  : HIGH = anonymous-accessible content / internal docs / APIs
+#            MEDIUM = open signup / user-visible surfaces
+#            LOW = footprinting
+#
+# Sources:
+#   [13] str1k3r0p/GoogleDorks                             https://github.com/str1k3r0p/GoogleDorks
+#   [15] root-Manas/webdorks                                https://github.com/root-Manas/webdorks
+#   [11] h0tak88r/Sec-88 (service checklists)               https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — internal/confidential content readable anonymously
+site:{target} inurl:confluence (confidential OR internal) [15]
+# Adapts the [15] Bing query ("site:TARGET_DOMAIN intitle:Confluence") to Google syntax; same operators.
+site:{target} inurl:confluence intitle:Confluence [15]
+site:{target} inurl:confluence [13]
+# XML-RPC/SOAP remote API — anonymous page reads when enabled
+inurl:/rpc/xmlrpc "confluence" [11]
+inurl:/rpc/soap-axis/confluenceservice-v2 [11]
+
+### MEDIUM ROI — misconfigured spaces & user data exposure
+inurl:/wiki/spaces [11]
+# User email visibility on posts (PII) — check user profiles anonymously
+
+### LOW ROI — footprinting
+site:{target} intitle:Confluence [13]
+
+# --- Direct-path probes (verified paths from [11]) ---
+# /wiki/spaces                      (list all spaces - anonymous readable?)
+# /rpc/xmlrpc                       (remote API: confluence2.getPage etc.)
+# /rpc/soap-axis/confluenceservice-v2

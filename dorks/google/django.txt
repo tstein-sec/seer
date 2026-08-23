@@ -1,0 +1,30 @@
+# ============================================================================
+# seer — Google Dork List: Django (Python framework)
+# ============================================================================
+# Category : Web framework
+# Target   : self-hosted Django (admin, debug toolbar, settings)
+# Ranking  : HIGH = admin / debug surfaces
+#            MEDIUM = config exposure
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (all-google-dorks.txt) https://github.com/Proviesec/google-dorks
+#   [2] readloud/Google-Hacking-Database              https://github.com/readloud/Google-Hacking-Database
+#   [3] opsdisk/pagodo (GHDB scrape)                  https://github.com/opsdisk/pagodo
+#   [11] h0tak88r/Sec-88                              https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — admin & debug toolbar surfaces
+intitle:"Django site admin" inurl:admin -site:stackoverflow.com -site:github.com [1]
+intitle:index of django/admin site:.* [3]
+inurl:/__debug__ [11]
+inurl:/djdt/ [11]
+
+### MEDIUM ROI — config exposure
+intitle:index of django.config [2]
+inurl:/admin/login [11]
+
+# --- Direct-path probes (verified from [11]) ---
+# /admin, /admin/login
+# /__debug__ (Django Debug Toolbar)
+# /static/debug_toolbar/, /djdt/
