@@ -1,0 +1,40 @@
+# ============================================================================
+# seer — Google Dork List: PostgreSQL (incl. phpPgAdmin / pgAdmin)
+# ============================================================================
+# Category : Database / SQL
+# Target   : leaked Postgres credentials, phpPgAdmin/pgAdmin panels
+# Ranking  : HIGH = credentials & connection strings
+#            MEDIUM = admin panels / logs
+#            LOW = error-based detectors (noisy)
+#
+# Sources:
+#   [1] Proviesec/google-dorks (finding-username-passwords/..., web-server/...) https://github.com/Proviesec/google-dorks
+#   [2] readloud/Google-Hacking-Database                                        https://github.com/readloud/Google-Hacking-Database
+#   [5] BullsEye0/google_dork_list                                              https://github.com/BullsEye0/google_dork_list
+#   [12] xcode96/Google-Dorks                                                   https://github.com/xcode96/Google-Dorks
+# ============================================================================
+
+### HIGH ROI — credentials, connection strings, config dumps
+"POSTGRES_PASSWORD=" ext:txt | ext:cfg | ext:env | ext:ini | ext:yml | ext:sql -git -gitlab [1]
+jdbc:postgresql://localhost: + username + password ext:yml | ext:java -git -gitlab [1]
+jdbc:postgresql://localhost: + username + password ext:yml | ext:javascript -git -gitlab [2]
+
+### MEDIUM ROI — exposed admin panels (phpPgAdmin / pgAdmin)
+intitle:"phpPgAdmin - Login" Language [1]
+intitle:"phpPgAdmin – Login" Language [5]
+inurl:/phpPgAdmin/browser.php [1]
+inurl:phpPgAdmin/browser.php intitle:"phpPgAdmin" [2]
+inurl:phpPgAdmin/browser.php intext:"Servers" | "PostgreSQL*" [2]
+inurl:phpPgAdmin intext:"Cappuccino" | intext:"Blue/Green" [2]
+ext:log inurl:"/pgadmin" [1]
+site:{target} intitle:"pgAdmin" inurl:pgadmin [12]
+inurl:/phpPgAdmin/browser.php [2]
+
+### LOW ROI — error-based detection (mostly legacy, noisy)
+"PostgreSQL query failed: ERROR: parser: parse error" [1]
+"Warning: pg_connect(): Unable to connect to PostgreSQL server: FATAL" [1]
+Supplied argument is not a valid PostgreSQL result [1]
+
+# --- Direct-path probes (verified paths from [1],[2],[12]) ---
+# /phpPgAdmin/browser.php, /phpPgAdmin/
+# /pgadmin (pgAdmin4 web UI - check for open login / default creds)

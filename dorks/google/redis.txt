@@ -1,0 +1,28 @@
+# ============================================================================
+# seer — Google Dork List: Redis
+# ============================================================================
+# Category : Database / in-memory cache
+# Target   : leaked REDIS_* env secrets, exposed redis web UIs, configs
+# Ranking  : HIGH = credentials/URIs
+#            MEDIUM = admin UI surfaces
+#            LOW = config leakage
+#
+# Sources:
+#   [1] Proviesec/google-dorks (all-google-dorks.txt) https://github.com/Proviesec/google-dorks
+#   [2] readloud/Google-Hacking-Database              https://github.com/readloud/Google-Hacking-Database
+#   [11] h0tak88r/Sec-88                              https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — connection strings & passwords
+filetype:env "REDIS_URL" [1]
+filetype:env intext:REDIS_PASSWORD [1]
+allintext:"redis_password" ext:env [2]
+
+### MEDIUM ROI — exposed admin / web UI surfaces
+inurl:/redis [11]
+inurl:/phpredisadmin [11]
+inurl:/redis-cli [11]
+
+# --- Direct-path probes (verified paths from [11]) ---
+# /redis, /phpredisadmin, /redis-cli
+# (Unauthenticated Redis on TCP 6379 is not a Google dork target — port-scan only.)

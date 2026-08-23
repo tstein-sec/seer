@@ -1,0 +1,29 @@
+# ============================================================================
+# seer — Google Dork List: Prometheus (monitoring / metrics)
+# ============================================================================
+# Category : Observability
+# Target   : self-hosted Prometheus (alerts/UI, /metrics endpoints)
+# Ranking  : HIGH = unauthenticated UI / targets view
+#            MEDIUM = exposed /metrics (info disclosure)
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (all-google-dorks.txt)  https://github.com/Proviesec/google-dorks
+#   [13] str1k3r0p/GoogleDorks                          https://github.com/str1k3r0p/GoogleDorks
+#   [11] h0tak88r/Sec-88                                https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — unauthenticated Prometheus UI
+intitle:prometheus time series collection and processing server inurl:/alerts [1]
+site:{target} inurl:prometheus [13]
+
+### MEDIUM ROI — exposed metric endpoints
+inurl:/api/v1/targets [11]
+inurl:/metrics [1]
+
+### LOW ROI — footprinting
+site:{target} inurl:/graph [11]
+
+# --- Direct-path probes (verified from [11]) ---
+# /graph, /targets, /service-discovery, /metrics
+# /api/v1/status/config, /api/v1/targets

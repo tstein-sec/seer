@@ -1,0 +1,38 @@
+# ============================================================================
+# seer — Google Dork List: Salesforce (CRM / communities)
+# ============================================================================
+# Category : SaaS / CRM
+# Target   : *.salesforce.com, *.force.com, *.lightning.force.com,
+#            *.my.salesforce.com, *.siteforce.com
+# Ranking  : HIGH = guest-user API access / data exposure
+#            MEDIUM = community & login surfaces
+#            LOW = footprinting
+#
+# Sources:
+#   [10] DiddyMeech/Titan-Reborn (brain/niches/saas/dork_pack.md) https://github.com/DiddyMeech/Titan-Reborn
+#   [11] h0tak88r/Sec-88 (service checklists)                     https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — guest-user API endpoints (unauth Apex REST = full CRM read when misconfigured)
+site:{target}.my.salesforce.com inurl:/services/apexrest [10]
+site:{target} inurl:/services/apexrest [10]
+# Lightning Aura framework endpoints (client-side controllers, often guest-accessible)
+site:{target} inurl:/sfsites/aura [11]
+site:{target} inurl:/aura [11]
+site:{target}.lightning.force.com [10]
+
+### MEDIUM ROI — communities / login surfaces
+site:{target} inurl:/apex/ "Salesforce" [10]
+# Community FQDNs to scope with site: (from [11]): *.force.com, *.secure.force.com, *.live.siteforce.com
+site:*.force.com "{target}" [11]
+site:*.secure.force.com "{target}" [11]
+site:*.live.siteforce.com "{target}" [11]
+
+### LOW ROI — footprinting
+site:{target} inurl:lightning.force.com [10]
+
+# --- Direct-path probes (verified from [11]) ---
+# /services/apexrest            (Apex REST - guest access check)
+# /sfsites/aura                 (Aura endpoint - POST {} to fingerprint)
+# /aura                         (Aura endpoint on lightning domains)
+# FQDNs to enumerate: *.force.com, *.secure.force.com, *.live.siteforce.com

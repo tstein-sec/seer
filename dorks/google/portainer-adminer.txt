@@ -1,0 +1,30 @@
+# ============================================================================
+# seer — Google Dork List: Portainer & Adminer (container & DB admin UIs)
+# ============================================================================
+# Category : DevOps / admin panels
+# Target   : Portainer (Docker mgmt), Adminer (single-file DB admin)
+# Ranking  : HIGH = unauthenticated consoles (full infra/DB control)
+#            MEDIUM = login surfaces
+#            LOW = footprinting
+#
+# Sources:
+#   [14] D3v4nshPat3l/Dork-Ripper (Dorks-List/Vulnerable_Web_Servers.txt) https://github.com/D3v4nshPat3l/Dork-Ripper
+#   [12] xcode96/Google-Dorks                                              https://github.com/xcode96/Google-Dorks
+#   [2]  readloud/Google-Hacking-Database                                  https://github.com/readloud/Google-Hacking-Database
+#   [13] str1k3r0p/GoogleDorks                                              https://github.com/str1k3r0p/GoogleDorks
+# ============================================================================
+
+### HIGH ROI — unauthenticated admin consoles
+intitle:"Portainer" inurl:login [14]
+inurl:portainer login [14]
+site:{target} intitle:"Portainer" inurl:portainer [12]
+"index of" "adminer.php" [2]
+inurl: /adminer.php [2]
+site:{target} intitle:"Adminer" inurl:adminer.php [12]
+
+### LOW ROI — footprinting
+site:{target} inurl:portainer [13]
+
+# --- Direct-path probes (verified from [12]) ---
+# /adminer.php   (Adminer - single file, no auth by itself)
+# /portainer     (Portainer UI)
