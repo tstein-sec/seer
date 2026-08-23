@@ -1,0 +1,41 @@
+# ============================================================================
+# seer — Google Dork List: MySQL / MariaDB
+# ============================================================================
+# Category : Database / SQL
+# Target   : leaked MySQL credentials, SQL dumps, error pages
+# Ranking  : HIGH = credentials & dumps
+#            MEDIUM = dump / error exposure
+#            LOW = legacy detectors
+#
+# Sources:
+#   [1] Proviesec/google-dorks (finding-username-passwords/, google-dorks-for-database-files.txt) https://github.com/Proviesec/google-dorks
+#   [2] readloud/Google-Hacking-Database                                                          https://github.com/readloud/Google-Hacking-Database
+#   [5] BullsEye0/google_dork_list                                                                https://github.com/BullsEye0/google_dork_list
+# ============================================================================
+
+### HIGH ROI — credentials & JDBC strings
+jdbc:mysql://localhost:3306/ + username + password ext:yml | ext:java -git -gitlab [2]
+jdbc:mysql://localhost:3306/ + username + password ext:yml | ext:javascript -git -gitlab [2]
+mysql intext:passwords filetype:txt [1]
+mysql root filetype:txt [1]
+mysql history files filetype:txt [1]
+mysql history files [1]
+
+### MEDIUM ROI — SQL dumps with schema + data
+"-- MySQL dump" "Server version" "Table structure for table" [1]
+create table filetype:sql [1]
+inurl:users.sql [1]
+inurl:backup.sql [1]
+inurl:db.sql [1]
+inurl:mysql.sql [1]
+inurl:setup.sql [1]
+filetype:sql inurl:backup [1]
+
+### LOW ROI — legacy error-string detection (noisy)
+site:.pk intext:Warning: mysql_fetch_array(): supplied argument is not a valid MySQL result resource in & "id" [5]
+site:.pk intext:Warning: mysql_free_result(): supplied argument is not a valid MySQL result resource in & "id" [5]
+mysql filetype:xml [1]
+mysql settings filetype:xml [1]
+
+# --- Direct-path probes (verified from [1]) ---
+# /db/websql/ (websql admin panel)

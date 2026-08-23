@@ -1,0 +1,22 @@
+# ============================================================================
+# seer — Google Dork List: Nexus / RabbitMQ / Rancher (artifact & infra UIs)
+# ============================================================================
+# Category : DevOps / artifact repositories & infrastructure
+# Target   : Nexus Repository Manager, RabbitMQ Management, Rancher
+# Ranking  : HIGH = unauthenticated management UIs
+#            MEDIUM = login surfaces & API
+#            LOW = footprinting
+#
+# Sources:
+#   [12] xcode96/Google-Dorks (constants/dorks.ts) https://github.com/xcode96/Google-Dorks
+# ============================================================================
+
+### HIGH ROI — unauthenticated management consoles
+# RabbitMQ Management (guest/guest default is common on exposed 15672)
+site:{target} intitle:"RabbitMQ Management" [12]
+site:{target} intitle:"Nexus Repository Manager" [12]
+site:{target} intitle:"Rancher" inurl:rancher [12]
+
+# --- Direct-path probes ---
+# Nexus 3 REST: /service/rest/v1/repositories  (repo list when anonymous)
+# RabbitMQ mgmt console usually on :15672 (guest/guest default).

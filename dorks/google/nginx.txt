@@ -1,0 +1,33 @@
+# ============================================================================
+# seer — Google Dork List: Nginx (incl. OpenResty)
+# ============================================================================
+# Category : Web server
+# Target   : nginx_status / stub_status, default pages, nginx config leaks
+# Ranking  : HIGH = status endpoints & config exposure
+#            MEDIUM = default pages (unmanaged hosts)
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (web-server/google-dorks-for-nginx.txt) https://github.com/Proviesec/google-dorks
+#   [11] h0tak88r/Sec-88                                               https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — status endpoints (active connection/request info)
+inurl:nginx_status [1]
+inurl:/stub_status [11]
+inurl:/status [11]
+
+### MEDIUM ROI — config leakage & default pages
+inurl:nginx.conf nginx site:github.com [1]
+intitle:"index of" "nginx.log" [1]
+intitle:"index of" "nginx" [1]
+intitle:Test Page for the Nginx HTTP Server on Fedora [1]
+intitle:"Welcome to nginx!" intext:"Welcome to nginx on Debian!" intext:"Thank you for" [1]
+intitle: "Welcome to nginx!" + "Thank you for using nginx." [1]
+intitle:"Welcome to OpenResty!" [1]
+
+### LOW ROI — footprinting
+intitle:"Welcome to nginx!" [1]
+
+# --- Direct-path probes (verified from [11]) ---
+# /nginx_status, /status, /stub_status

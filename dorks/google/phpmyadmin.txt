@@ -1,0 +1,65 @@
+# ============================================================================
+# seer — Google Dork List: phpMyAdmin (MySQL admin panel)
+# ============================================================================
+# Category : Database admin panel
+# Target   : /phpmyadmin, /pma, /dbadmin installs; MySQL/MariaDB web admins
+# Ranking  : HIGH = dumped schemas / exposed panel / root login strings
+#            MEDIUM = version + path fingerprinting
+#            LOW = source-only mentions
+#
+# Sources:
+#   [1] Proviesec/google-dorks (web-server/google-dorks-for-phpmyadmin.txt) https://github.com/Proviesec/google-dorks
+#   [2] readloud/Google-Hacking-Database                                    https://github.com/readloud/Google-Hacking-Database
+#   [5] BullsEye0/google_dork_list                                          https://github.com/BullsEye0/google_dork_list
+#   [12] xcode96/Google-Dorks                                               https://github.com/xcode96/Google-Dorks
+#   [11] h0tak88r/Sec-88 (service checklists)                               https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — exposed SQL dumps (full database schema + rows)
+"phpMyAdmin MySQL-Dump" "INSERT INTO" -"the" [1]
+"# phpMyAdmin MySQL-Dump" "INSERT INTO" -"the" [1]
+ext:sql intext:"-- phpMyAdmin SQL Dump" -site:github.* [1]
+filetype:sql "phpmyAdmin SQL Dump" (pass|password|passwd|pwd) [1]
+filetype:sql intext:wp_users phpmyadmin [1]
+phpMyAdmin SQL Dump [1]
+phpMyAdmin dumps [1]
+" phpMyAdmin MySQL-Dump" filetype:txt [1]
+intext:"phpMyAdmin" "running on" inurl:"main.php" [1]
+
+### MEDIUM ROI — exposed/unauthenticated phpMyAdmin panels + setup pages
+intitle:phpMyAdmin "Welcome to phpMyAdmin ***" "running on * as root@*" [1]
+intitle:phpMyAdmin "Welcome to phpMyAdmin *" "running on as root@" [1]
+"Welcome to phpMyAdmin" " Create new database" [1]
+"Welcome to phpMyAdmin" AND " Create new database" [1]
+"Welcome to phpMyAdmin" + "Username:" + "Password:" + "Language:" + "Afrikaans" [1]
+you really should fix this security hole by setting a password for user '.root'. inurl:/phpmyadmin intitle:localhost [1]
+inurl:"/phpmyadmin/user_password.php" [1]
+inurl:"/phpmyadmin/user_password.php" -inurl:git [1]
+inurl:/phpMyAdmin/setup/index.php?phpMyAdmin= [1]
+inurl:/phpmyadmin/index.php?db= [1]
+inurl:"phpmyadmin/index.php" intext:"[ Edit ] [ Create PHP Code ] [ Refresh ]" [1]
+inurl:main.php Welcome to phpMyAdmin [1]
+inurl:main.php phpMyAdmin [1]
+inurl:phpmyadmin/index.php & (intext:username & password & "Welcome to") [1]
+site:*/phpMyAdmin/robots.txt [5]
+intitle:phpMyAdmin [1]
+inurl:phpmyadmin/themes intext:"pmahomme" [1]
+inurl:.php? intext:CHARACTER_SETS,COLLATIONS, ?intitle:phpmyadmin [1]
+
+### MEDIUM ROI — directory listings / version disclosure
+"Index of" inurl:phpmyadmin [1]
+intitle:"Index of" phpmyadmin [1]
+intitle:"index of /phpmyadmin" modified [1]
+inurl:/phpmyadmin/changelog.php -github -gitlab [1]
+
+### LOW ROI — generic panel footprinting
+phpmyadmin/ [1]
+phpldapadmin/ [1]
+phppgadmin/ [1]
+site:{target} intitle:"phpMyAdmin" inurl:phpmyadmin [12]
+
+# --- Direct-path probes (verified paths from [1],[5],[11]) ---
+# /phpmyadmin, /phpMyAdmin, /pma, /dbadmin
+# /phpmyadmin/setup/  (setup mode = hardcoded creds / reinstall => takeover)
+# /phpmyadmin/changelog.php (version disclosure)
+# /phpmyadmin/robots.txt

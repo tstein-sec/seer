@@ -1,0 +1,28 @@
+# ============================================================================
+# seer — Google Dork List: MongoDB
+# ============================================================================
+# Category : Database / NoSQL
+# Target   : leaked connection strings, exposed mongo web UIs, dumps
+# Ranking  : HIGH = live credentials / connection strings / dumps
+#            MEDIUM = admin UI surfaces
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (google-dorks-for-mongodb.txt) https://github.com/Proviesec/google-dorks
+#   [11] h0tak88r/Sec-88                                       https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — connection strings with credentials (often in leaked .env / configs)
+filetype:env "MONGODB_URI" [1]
+filetype:env "MONGO_URI" [1]
+filetype:env "MONGODB_PASSWORD" [1]
+"mongodb://" "password" [1]
+"mongodb+srv://" [1]
+
+### MEDIUM ROI — exposed admin UI / mongo-express surfaces
+inurl:/dbadmin [11]
+inurl:/mongo [11]
+inurl:/admin/mongo [11]
+
+# --- Direct-path probes (verified paths from [11]) ---
+# /dbadmin, /mongo, /admin/mongo (mongo-express etc. — no-auth CRUD when open)

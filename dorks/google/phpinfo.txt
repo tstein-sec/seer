@@ -1,0 +1,39 @@
+# ============================================================================
+# seer — Google Dork List: phpinfo() pages
+# ============================================================================
+# Category : App server / PHP
+# Target   : exposed phpinfo() = full server config disclosure (PHP settings,
+#            env vars, paths, loaded modules, often DB creds in env)
+# Ranking  : HIGH = phpinfo pages (config + env disclosure)
+#            MEDIUM = version/host fingerprinting
+#            LOW = legacy build fingerprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (all-google-dorks.txt, google-dorks-for-webserver.txt) https://github.com/Proviesec/google-dorks
+#   [2] readloud/Google-Hacking-Database                                              https://github.com/readloud/Google-Hacking-Database
+#   [3] opsdisk/pagodo (GHDB scrape)                                                  https://github.com/opsdisk/pagodo
+# ============================================================================
+
+### HIGH ROI — exposed phpinfo() pages
+ext:php | intitle:phpinfo "published by the PHP Group" [1]
+intitle:"phpinfo()" inurl:"phpinfo.php" [2]
+site:*/phpinfo.php intitle:"phpinfo()" [1]
+inurl:"/phpinfo.php" "PHP Version" [1]
+"PHP Version" inurl:/php/phpinfo.php [1]
+inurl:info.php intext:"PHP Version" intitle:"phpinfo()" [3]
+intitle:"phpinfo" site:*.com.* intext:"HTTP_HOST" [2]
+intitle:phpinfo "PHP Version" [1]
+inurl:"?act=phpinfo" [1]
+
+### MEDIUM ROI — directory listings with phpinfo
+intitle:"Index of" phpinfo.php [1]
+intext:"index of" "phpinfo" [3]
+intext:"index of" "phpinfo" site:*.in [3]
+
+### LOW ROI — legacy build fingerprinting
+intitle:"phpinfo()" +"mysql.default_password" +"Zend Scripting Language Engine" [1]
+intitle:phpinfo intext:"php version" +windows [1]
+inurl:phpinfo.php intext:build 2600 [1]
+
+# --- Direct-path probes (verified from [1],[2],[3]) ---
+# /phpinfo.php, /info.php, /test.php, /php/phpinfo.php, /?act=phpinfo
