@@ -1,0 +1,111 @@
+# ============================================================================
+# seer — Google Dork List: WordPress
+# ============================================================================
+# Category : CMS
+# Target   : wordpress.com, self-hosted WordPress
+# Ranking  : HIGH = credentials/config/data exposure (highest ROI first)
+#            MEDIUM = admin panels, debug surfaces, user enumeration
+#            LOW = footprinting / version detection
+# Placeholders: {target} = your authorized scope. Replace {id} with numbers.
+#
+# Sources:
+#   [1] Proviesec/google-dorks (cms/google-dorks-for-wordpress.txt) https://github.com/Proviesec/google-dorks
+#   [2] readloud/Google-Hacking-Database                          https://github.com/readloud/Google-Hacking-Database
+#   [3] opsdisk/pagodo (GHDB scrape)                              https://github.com/opsdisk/pagodo
+#   [5] BullsEye0/google_dork_list                                https://github.com/BullsEye0/google_dork_list
+#   [8] Tobee1406/Awesome-Google-Dorks                              https://github.com/Tobee1406/Awesome-Google-Dorks
+#   [11] h0tak88r/Sec-88 (service checklists)                     https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — credentials, config files, database backups
+# wp-config.php holds DB credentials (DB_PASSWORD). These are the strongest WordPress hits.
+inurl:wp-config.php intext:DB_PASSWORD [1]
+filetype:txt inurl:wp-config [1]
+intitle:"Index of" wp-config.php [1]
+intitle:"Index of" wp-config [1]
+inurl:wp-config.txt [1]
+inurl:wp-config.bak [1]
+inurl:wp-config-backup.txt [1]
+inurl:"wp-license.php?file=../..//wp-config" [1]
+/intitle:"index of" "wp-config.php" [11]
+# Database dumps / backups of wp-content
+filetype:sql inurl:wp-content/backup- [1]
+filetype:sql inurl:wp-content/uploads [1]
+inurl:wp-content/uploads/dump.sql [1]
+inurl:wp-content/ai1wm-backups wpress [1]
+inurl:wp-content/wpclone-temp/wpclone_backup [1]
+inurl:wp-content/wpbackitup_backups [1]
+inurl:wp-content/ inurl:backups [1]
+inurl:"plugins/wp-db-backup/wp-db-backup.php" [1]
+inurl:wp-content/uploads/db-backup [1]
+# Debug logs leak stack traces, tokens, and sometimes credentials
+inurl:wp-content/debug.log [1]
+inurl:/wp-content/uploads/file-manager/log.txt [1]
+site:*/wp-includes/Requests/php_errorlog [1]
+inurl:log ext:log inurl:wp- [1]
+inurl:wp-security-audit-log ext:log [1]
+# Whole-site archives / backup copies reachable via direct path
+site:*/wordpress/wordpress.bak/ [1]
+inurl:wp-content/ai1wm-backups [1]
+inurl:wp-content/wpbackitup_backups [1]
+
+### MEDIUM ROI — admin panels, user enumeration, vulnerable plugin surfaces
+# User enumeration via the REST API (returns usernames + author IDs)
+inurl:/wp-json/wp/v2/users "id":1,"name": [1]
+inurl:/wp-json/wp/v2/users/ -wordpress.stackexchange.com -stackoverflow.com [1]
+inurl:/wp-json/wp/v2/users/ "id":1,"name":" -wordpress.stackexchange.com -stackoverflow.com [1]
+inurl:/wp-json/ -wordpress [1]
+inurl:/wp-json/wp/v2/users/{id} [11]
+# Login / admin surfaces & setup files (installer exposure = takeover path)
+site:*/wp-admin/install.php intitle:"WordPress Installation" [1]
+(intitle:"WordPress Setup Configuration File")|(inurl:"setup-config.php?step=") [1]
+inurl:"/wp-admin/setup-config.php" intitle:"Setup Configuration File" [1]
+intitle:"WordPress > * > Login form" inurl:"wp-login.php" [1]
+inurl:wp-login.php?action=lostpassword [1]
+inurl:wp-login.php?action=register [1]
+inurl:/wp-admin/ [1]
+inurl:/wp/wp-admin/ [1]
+inurl:/wp-admin/admin.php intitle:"Log In" [1]
+site:*/wp-admin/maint/repair.php intext:"define(WP_ALLOW_REPAIR,true);" [1]
+site:*/wp-admin/user-edit.php [1]
+site:*/wp-settings.php [1]
+# xmlrpc.php = password-guessing / SSRF / pingback abuse surface
+inurl:xmlrpc.php [11]
+# Known file-manager/uploader plugin exposure (RCE class)
+inurl:"/wp-content/plugins/wp-file-manager/lib/php/connector.minimal.php" [2]
+inurl:"/wp-includes/user.php" -site:wordpress.org -site:github.com -site:fossies.org [2]
+inurl:wp-admin/admin-ajax.php inurl:wp-config.php [1]
+inurl:/wp-admin/admin-ajax.php?action=revslider_ajax_action [1]
+inurl:wp-content/uploads/ninja-forms/ intitle:"index of" [1]
+inurl:"/wp-content/uploads/file-manager/log.txt" [1]
+# Uploaded assets / user content listing (index of)
+intitle:"Index of" /wp-content/uploads [1]
+intitle:"Index of" wp-content [1]
+intitle:"Index of" wp-admin [1]
+intitle:"Index of" wp-upload [1]
+inurl:/wp-includes/ [1]
+inurl:/wp-includes/certificates/ [1]
+
+### LOW ROI — footprinting / version detection
+"is proudly powered by WordPress" [1]
+"Powered by WordPress" -html filetype:php -demo -wordpress.org -bugtraq [1]
+intitle:"powered by WordPress" version [8]
+inurl:wp-login [1]
+inurl:wp-login.php [1]
+inurl:wp/wp-login.php [1]
+inurl:wp-links-opml.php [1]
+inurl:wp-mail.php [1]
+inurl:/wp-json/ [1]
+inurl:readme.html [11]
+inurl:license.txt [11]
+inurl:wp-includes/version.php [11]
+"the WordPress" inurl:wp-config ext:txt [1]
+inurl:wp-content/uploads filetype:xls password [1]
+
+# --- Direct-path probes (verified sensitive paths, from [11]) ---
+# /wp-config.php~, /wp-config.php.bak, /wp-config.php.old  (editor backup files)
+# /wp-admin/install.php
+# /xmlrpc.php
+# /wp-json/wp/v2/users, /wp-json/wp/v2/users/{id}
+# /readme.html, /license.txt, /wp-includes/version.php
+# /wp-content/debug.log

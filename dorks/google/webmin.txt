@@ -1,0 +1,28 @@
+# ============================================================================
+# seer — Google Dork List: Webmin (system admin panel)
+# ============================================================================
+# Category : Hosting / admin panel
+# Target   : Webmin on :10000 (and Usermin), often internet-exposed
+# Ranking  : HIGH = login pages (weak creds / unpatched CVEs)
+#            MEDIUM = port-based footprinting
+#            LOW = version fingerprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (all-google-dorks.txt) https://github.com/Proviesec/google-dorks
+#   [2] readloud/Google-Hacking-Database              https://github.com/readloud/Google-Hacking-Database
+#   [12] xcode96/Google-Dorks                          https://github.com/xcode96/Google-Dorks
+# ============================================================================
+
+### HIGH ROI — login pages
+intitle:"Login to Webmin" intext:"You must enter a username and password to login to the server" [1]
+intitle:"login to webmin" "You must enter a username and password to login to the Webmin server" [2]
+site:{target} intitle:"Webmin" inurl:8000 OR inurl:10000 [12]
+
+### MEDIUM ROI — port footprinting
+inurl:":10000" intext:webmin [1]
+
+### LOW ROI — footprinting
+intitle:webmin [1]
+
+# --- Direct-path probes (verified from [1],[12]) ---
+# :10000 (Webmin default port)

@@ -1,0 +1,30 @@
+# ============================================================================
+# seer — Google Dork List: Zabbix & Splunk (monitoring / SIEM)
+# ============================================================================
+# Category : Observability
+# Target   : self-hosted Zabbix (index.php frontend), Splunk web UI
+# Ranking  : HIGH = unauthenticated dashboards / UI exposure
+#            MEDIUM = login pages
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (all-google-dorks.txt) https://github.com/Proviesec/google-dorks
+#   [2] readloud/Google-Hacking-Database              https://github.com/readloud/Google-Hacking-Database
+#   [13] str1k3r0p/GoogleDorks                         https://github.com/str1k3r0p/GoogleDorks
+# ============================================================================
+
+### ZABBIX — HIGH ROI — unauthenticated frontends & widgets
+intitle:"Zabbix" intext:"username" intext:"password" inurl:"/zabbix/index.php" [1]
+inurl:'/zabbix/index.php' [1]
+intitle:"Dashboards" AND inurl:"/zabbix/zabbix.php?action=dashboard.list" [1]
+inurl:zabbix.php AND intext:"Zabbix SIA" [1]
+inurl:zabbix/zabbix.php [1]
+site:{target} inurl:zabbix [13]
+
+### SPLUNK — HIGH ROI — unauthenticated web UI (admin apps/config indexable)
+intitle:"Login - splunk" [2]
+site:{target} inurl:splunk [13]
+
+# --- Direct-path probes (verified from [1],[2]) ---
+# Zabbix: /zabbix/index.php, /zabbix/zabbix.php?action=dashboard.list
+# Splunk: /en-US/account/login

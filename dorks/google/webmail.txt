@@ -1,0 +1,42 @@
+# ============================================================================
+# seer — Google Dork List: Webmail (Roundcube / SquirrelMail / SOGo / others)
+# ============================================================================
+# Category : E-mail / groupware
+# Target   : Roundcube, SquirrelMail, SOGo, Open WebMail, Kerio, generic
+# Ranking  : HIGH = mail login surfaces (account spray targets, mail data)
+#            MEDIUM = version-exposed webmails
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (all-google-dorks.txt) https://github.com/Proviesec/google-dorks
+#   [2] readloud/Google-Hacking-Database              https://github.com/readloud/Google-Hacking-Database
+#   [5] BullsEye0/google_dork_list                    https://github.com/BullsEye0/google_dork_list
+# ============================================================================
+
+### HIGH ROI — webmail login surfaces
+intext:"Roundcube Webmail" intitle:"Welcome to Roundcube Webmail" -site:roundcube.net [1]
+intitle:"SOGo" site:webmail.* [1]
+inurl:/webmail/src/login.php intext:"SquirrelMail" [2]
+intitle:"Kerio Connect Client" inurl:"/webmail/login/" [2]
+intitle:"Open WebMail" "Open WebMail version (2.20|2.21|2.30) " [1]
+inurl:/openwebmail/cgi-bin/openwebmail/etc/ [1]
+inurl:/cgi-bin/sqwebmail?noframes=1 [1]
+
+### MEDIUM ROI — version-exposed / niche webmails
+"SquirrelMail version 1.4.4" inurl:src ext:php [5]
+intitle:"WebMail | Powered by Winmail Server - Login" & (intext:"Username" & intext:"Password") [1]
+intitle:"Mail Server CMailServer Webmail" "5.2" [1]
+intitle:"EMUMAIL - Login" "Powered by EMU Webmail" [1]
+intitle:"igenus webmail login" [1]
+intitle:"Mail - AfterLogic WebMail" [1]
+
+### LOW ROI — generic footprinting
+inurl:/webmail/ [1]
+inurl:webmail/src/login.php [1]
+("powered by nocc" intitle:"NOCC Webmail") -site:sourceforge.net -Zoekinalles.nl -analysis [1]
+
+# --- Direct-path probes (verified from [1],[2]) ---
+# /webmail/src/login.php          (SquirrelMail)
+# /webmail/login/                 (Kerio Connect)
+# /openwebmail/cgi-bin/openwebmail/etc/ (Open WebMail data)
+# /cgi-bin/sqwebmail?noframes=1   (SQWebmail)
