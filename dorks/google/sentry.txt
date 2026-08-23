@@ -1,0 +1,28 @@
+# ============================================================================
+# seer — Google Dork List: Sentry (error tracking / DSN leaks)
+# ============================================================================
+# Category : Observability
+# Target   : sentry.io orgs, self-hosted Sentry, leaked DSNs
+# Ranking  : HIGH = DSNs (live ingest endpoints, often with public issue data)
+#            MEDIUM = auth tokens
+#            LOW = footprinting
+#
+# Sources:
+#   [15] root-Manas/webdorks (dorks/index.html) https://github.com/root-Manas/webdorks
+# ============================================================================
+
+### HIGH ROI — DSN leakage (error streams + stack traces = recon gold)
+site:{target} "sentry" "dsn" [15]
+site:{target} "sentry.io" "dsn" [15]
+inurl:sentry "dsn" [15]
+
+### MEDIUM ROI — auth tokens
+filetype:env "SENTRY_AUTH_TOKEN" [15]
+"SENTRY_DSN" [15]
+
+### LOW ROI — footprinting
+site:{target} "sentry.io" [15]
+
+# --- Direct-path probes (verified from [15]) ---
+# GitHub code search: org:{target} "sentry.io" "dsn"
+# PublicWWW: {target} "sentry.io"

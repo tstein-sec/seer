@@ -1,0 +1,28 @@
+# ============================================================================
+# seer — Google Dork List: Slack (workspaces & tokens)
+# ============================================================================
+# Category : SaaS / collaboration
+# Target   : leaked Slack tokens/webhooks, public workspaces
+# Ranking  : HIGH = live tokens (xoxb- / xoxp- are valid credential prefixes)
+#            MEDIUM = config files with slack secrets
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (google-dorks-for-slack.txt) https://github.com/Proviesec/google-dorks
+#   [10] DiddyMeech/Titan-Reborn                             https://github.com/DiddyMeech/Titan-Reborn
+# ============================================================================
+
+### HIGH ROI — token material (valid credential prefixes, rotate-on-hit)
+"xoxb-" [1]
+"xoxp-" [1]
+filetype:env "SLACK_TOKEN" [1]
+filetype:env "SLACK_API_TOKEN" [1]
+filetype:env "SLACK_WEBHOOK" [1]
+
+### MEDIUM ROI — configs & integration surfaces
+filetype:json "slack" "token" [1]
+site:{target} inurl:/integrations/slack [10]
+
+# --- Direct-path probes (verified from [1]) ---
+# Note: token leaks are usually in repos/code hosts, not on Google-indexed
+# websites. Pair these queries with GitHub code search for best ROI.

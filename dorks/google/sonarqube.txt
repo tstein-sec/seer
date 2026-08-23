@@ -1,0 +1,25 @@
+# ============================================================================
+# seer — Google Dork List: SonarQube (code quality / SAST)
+# ============================================================================
+# Category : DevOps / CI-CD
+# Target   : self-hosted SonarQube (public projects leak source code)
+# Ranking  : HIGH = public project/rule UI (source exposure)
+#            MEDIUM = login surfaces
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (all-google-dorks.txt) https://github.com/Proviesec/google-dorks
+#   [13] str1k3r0p/GoogleDorks                          https://github.com/str1k3r0p/GoogleDorks
+# ============================================================================
+
+### HIGH ROI — SonarQube UI (project probe = view source of indexed projects when anonymous)
+intext:"SonarQube" + "by SonarSource SA." + "LGPL v3" [1]
+
+### MEDIUM ROI — login/admin surfaces
+site:{target} inurl:sonarqube [13]
+
+### LOW ROI — footprinting
+site:{target} inurl:sonar [13]
+
+# --- Direct-path probes (verified from [1]) ---
+# intext:"SonarQube" "by SonarSource SA." "LGPL v3"  (footer string confirms instance)

@@ -1,0 +1,36 @@
+# ============================================================================
+# seer — Google Dork List: Spring Boot (Actuator / JVM framework)
+# ============================================================================
+# Category : Web framework
+# Target   : Spring Boot actuator endpoints, spring configs
+# Ranking  : HIGH = /actuator/env & heapdump (secrets + memory)
+#            MEDIUM = property/config leak & console surfaces
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (google-dorks-for-kubernetes.txt, all-google-dorks.txt) https://github.com/Proviesec/google-dorks
+#   [2] readloud/Google-Hacking-Database                                               https://github.com/readloud/Google-Hacking-Database
+#   [11] h0tak88r/Sec-88                                                               https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — actuator endpoints exposing env/secrets/heap
+inurl:/actuator/env [1]
+inurl:/actuator [1]
+inurl:/actuator/heapdump [11]
+inurl:/actuator/health [1]
+
+### MEDIUM ROI — property files & JMX consoles
+"spring.datasource.password=" + "spring.datasource.username=" ext:properties -git -gitlab [2]
+username | password inurl:resources/application.properties -github.com -gitlab [1]
+inurl:/jolokia [11]
+inurl:/hawtio [11]
+
+### LOW ROI — footprinting / beans info
+inurl:/actuator/beans [11]
+inurl:/actuator/mappings [11]
+
+# --- Direct-path probes (verified from [11]) ---
+# /actuator, /actuator/env, /actuator/beans, /actuator/mappings,
+# /actuator/health, /actuator/info, /actuator/heapdump, /actuator/threaddump,
+# /actuator/loggers, /actuator/conditions
+# /jolokia, /jolokia/exec, /hawtio, /api/hawtio

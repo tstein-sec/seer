@@ -1,0 +1,32 @@
+# ============================================================================
+# seer — Google Dork List: Apache Tomcat
+# ============================================================================
+# Category : App server
+# Target   : Tomcat manager/host-manager/examples, error pages
+# Ranking  : HIGH = manager consoles (weak/default creds classic)
+#            MEDIUM = example apps & error surfaces
+#            LOW = footprinting
+#
+# Sources:
+#   [1] Proviesec/google-dorks (google-dorks-for-webserver.txt) https://github.com/Proviesec/google-dorks
+#   [12] xcode96/Google-Dorks                                     https://github.com/xcode96/Google-Dorks
+#   [11] h0tak88r/Sec-88                                           https://github.com/h0tak88r/Sec-88
+# ============================================================================
+
+### HIGH ROI — manager / host-manager consoles
+site:{target} intitle:"Apache Tomcat" inurl:/manager/html [12]
+inurl:/host-manager/html [11]
+site:{target} intitle:"Apache Tomcat" [12]
+
+### MEDIUM ROI — example apps (JSP exec / info disclosure)
+intitle:"Apache Tomcat" "Error Report" [1]
+intitle:"apache tomcat/" "Apache Tomcat examples" [1]
+intitle:"apache tomcat/" + "Find additional important configuration information in:" [1]
+inurl:/examples [11]
+
+### LOW ROI — footprinting
+intitle:"apache tomcat/" [1]
+
+# --- Direct-path probes (verified from [11]) ---
+# /manager/html, /host-manager/html
+# /examples, /docs, /admin

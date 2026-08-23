@@ -1,0 +1,34 @@
+# ============================================================================
+# seer — Google Dork List: Microsoft SharePoint
+# ============================================================================
+# Category : Enterprise collaboration / O365
+# Target   : *.sharepoint.com, self-hosted SharePoint (_layouts, _catalogs)
+# Ranking  : HIGH = exposed lists/asset catalogs
+#            MEDIUM = site collections & login surfaces
+#            LOW = footprinting
+#
+# Sources:
+#   [6] TakSec/google-dorks-bug-bounty                 https://github.com/TakSec/google-dorks-bug-bounty
+#   [12] xcode96/Google-Dorks                          https://github.com/xcode96/Google-Dorks
+#   [13] str1k3r0p/GoogleDorks                          https://github.com/str1k3r0p/GoogleDorks
+#   [1] Proviesec/google-dorks (google-dorks-for-webserver.txt) https://github.com/Proviesec/google-dorks
+# ============================================================================
+
+### HIGH ROI — exposed content / catalog directories
+# _layouts hosts app pages; listing it on a self-hosted farm = misconfig
+site:{target} intext:"Microsoft SharePoint" inurl:_layouts/ [12][13]
+# SharePoint catalog / master page gallery listing
+inurl:/_catalogs [1]
+
+### MEDIUM ROI — site collections / login
+# Tenant-level discovery: any public SharePoint site of the org (replace {target})
+site:sharepoint.com "{target}" [13]
+site:sharepoint.com "example[.]com" [6]
+
+### LOW ROI — footprinting
+site:{target} inurl:sharepoint [12]
+
+# --- Direct-path probes (verified from [1],[12],[13]) ---
+# /_layouts/15/  (app pages root; 200 on SharePoint farms)
+# /_catalogs     (master page / content type galleries if listing enabled)
+# /_api/web/lists (REST API - anonymous read when permissions misconfigured)
